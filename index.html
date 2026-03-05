@@ -51,13 +51,11 @@
     </div>
     <script>
         document.querySelector('.btn-wa').addEventListener('click', function(e) {
-            e.preventDefault(); // Mencegah tombol melakukan refresh halaman
-
-            // 1. Ambil data dari kolom input
+            e.preventDefault(); 
+            
             const nama = document.getElementById('nama_pengguna').value;
             const jumlah = document.getElementById('jumlah').value;
 
-            // 2. Cek apakah kolom kosong
             if (nama.trim() === '') {
                 alert('Halo! Mohon isi Nama Lengkap Anda terlebih dahulu ya.');
                 return;
@@ -66,17 +64,14 @@
                 alert('Mohon masukkan jumlah pesanan yang benar (minimal 1).');
                 return;
             }
-
-            // 3. Hitung Total Harga (15000 per botol)
+            
             const hargaPerBotol = 15000;
             const totalHarga = jumlah * hargaPerBotol;
 
-            // 4. Format angka menjadi format Rupiah (contoh: 15.000)
             const formatRupiah = (angka) => {
                 return 'Rp ' + angka.toLocaleString('id-ID');
             };
 
-            // 5. Susun Pesan WhatsApp sesuai format Anda
             const pesan = `Halo Milo Jelly Station! 👋
 
 Nama Pemesan: *${nama}*
@@ -90,11 +85,8 @@ TOTAL: *${formatRupiah(totalHarga)}*
 
 Mohon segera diproses ya Kak, terima kasih! 🙏`;
 
-            // 6. GANTI NOMOR WA DI BAWAH INI DENGAN NOMOR ANDA
-            // Gunakan kode negara 62 sebagai pengganti angka 0 di awal. Jangan pakai tanda + atau spasi.
             const nomorWA = '6285168631669'; 
 
-            // 7. Ubah teks menjadi format link & Buka WhatsApp
             const linkWA = `https://api.whatsapp.com/send?phone=${nomorWA}&text=${encodeURIComponent(pesan)}`;
             window.open(linkWA, '_blank');
         });
