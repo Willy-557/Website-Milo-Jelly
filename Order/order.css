@@ -1,0 +1,148 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif; /* Font modern sesuai desain */
+}
+
+body {
+    background-color: #fcf7f2; /* Warna background krem lembut */
+    color: #333;
+}
+
+/* Navbar dibuat putih sesuai gambar desain */
+.navbar {
+    background-color: #ffffff; 
+    padding: 15px 20px;
+}
+
+.navbar-left img {
+    height: 40px; /* Gunakan height untuk logo di navbar */
+}
+
+/* Layout Utama - Dibuat khusus Mobile (Vertikal) */
+.container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 30px; /* Jarak antara gambar dan form */
+    padding: 30px 20px;
+    max-width: 480px; /* Membatasi lebar agar tetap seperti tampilan HP di layar besar */
+    margin: 0 auto;
+}
+
+/* Kotak Gambar Kiri */
+.container-left {
+    background-color: white;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Tambahan bayangan halus */
+    width: 100%;
+    text-align: center;
+}
+
+.container-left img {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* Label Kecil di bawah gambar */
+.badges {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.badge {
+    color: #059669;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 13px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 8px 15px;
+    border-radius: 8px;
+}
+
+/* Kotak Form Kanan */
+.container-right {
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    width: 100%;
+}
+
+#header1 {
+    font-size: 26px; /* Diperkecil agar pas di HP */
+    color: #5d4037; /* Warna coklat gelap */
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* Styling Input & Label */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #5d4037;
+}
+
+.form-group input {
+    width: 100%; /* Agar full menyesuaikan layar HP */
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Trik untuk memunculkan teks "Botol" di dalam kolom input */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.suffix {
+    position: absolute;
+    right: 15px;
+    color: #999;
+    font-size: 14px;
+}
+
+/* Styling Tombol WhatsApp */
+.btn-wa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #059669; /* Warna hijau WA */
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+.btn-wa img {
+    width: 20px;
+}
+
+.btn-wa:hover {
+    background-color: #047857;
+}
