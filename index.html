@@ -91,7 +91,7 @@
             formData.append('total', totalHarga);
 
             
-            fetch(scriptURL, { method: 'POST', body: formData })
+            fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
                 .then(response => {
                     
                     const pesan = `Halo Milo Jelly Station! 👋\n\nNama Pemesan: *${nama}*\n\nRincian Pesanan:\n1. Milo Original Jelly (${jumlah}x) - ${formatRupiah(totalHarga)}\n\n━━━━━━━━━━━━━━\nTOTAL: *${formatRupiah(totalHarga)}*\n━━━━━━━━━━━━━━\n\nMohon segera diproses ya Kak, terima kasih! 🙏`;
