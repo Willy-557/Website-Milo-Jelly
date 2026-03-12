@@ -51,11 +51,16 @@
     </div>
     <script>
         document.querySelector('.btn-wa').addEventListener('click', function(e) {
-            e.preventDefault(); 
+            e.preventDefault();
+
+            
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzwpXVUaAxPPQ9hx0c2gTlCfgn-9dLOlgJ5J4irzdMOIZZ6lmHYodqLYYA4YKJt2FkD/exec'; 
+
             
             const nama = document.getElementById('nama_pengguna').value;
             const jumlah = document.getElementById('jumlah').value;
 
+            
             if (nama.trim() === '') {
                 alert('Halo! Mohon isi Nama Lengkap Anda terlebih dahulu ya.');
                 return;
@@ -64,31 +69,50 @@
                 alert('Mohon masukkan jumlah pesanan yang benar (minimal 1).');
                 return;
             }
+
             
             const hargaPerBotol = 15000;
             const totalHarga = jumlah * hargaPerBotol;
 
+            
             const formatRupiah = (angka) => {
                 return 'Rp ' + angka.toLocaleString('id-ID');
             };
 
-            const pesan = `Halo Milo Jelly Station! 👋
+            
+            const btn = document.querySelector('.btn-wa');
+            const teksTombolAsli = btn.innerHTML;
+            btn.innerHTML = '<span>Mencatat Pesanan... Tunggu ya ⏳</span>';
 
-Nama Pemesan: *${nama}*
+            
+            const formData = new FormData();
+            formData.append('nama', nama);
+            formData.append('jumlah', jumlah);
+            formData.append('total', totalHarga);
 
-Rincian Pesanan:
-1. Milo Original Jelly (${jumlah}x) - ${formatRupiah(totalHarga)}
+            
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    
+                    const pesan = `Halo Milo Jelly Station! 👋\n\nNama Pemesan: *${nama}*\n\nRincian Pesanan:\n1. Milo Original Jelly (${jumlah}x) - ${formatRupiah(totalHarga)}\n\n━━━━━━━━━━━━━━\nTOTAL: *${formatRupiah(totalHarga)}*\n━━━━━━━━━━━━━━\n\nMohon segera diproses ya Kak, terima kasih! 🙏`;
 
-━━━━━━━━━━━━━━
-TOTAL: *${formatRupiah(totalHarga)}*
-━━━━━━━━━━━━━━
+                    
+                    const nomorWA = '6283123285268'; 
 
-Mohon segera diproses ya Kak, terima kasih! 🙏`;
-
-            const nomorWA = '6285168631669'; 
-
-            const linkWA = `https://api.whatsapp.com/send?phone=${nomorWA}&text=${encodeURIComponent(pesan)}`;
-            window.open(linkWA, '_blank');
+                    const linkWA = `https://api.whatsapp.com/send?phone=${nomorWA}&text=${encodeURIComponent(pesan)}`;
+                    
+                    
+                    btn.innerHTML = teksTombolAsli;
+                    
+                    
+                    window.open(linkWA, '_blank');
+                })
+                .catch(error => {
+                    
+                    console.error('Error!', error.message);
+                    alert('Gagal menyambungkan ke sistem pembukuan, tapi Anda tetap bisa memesan via WA.');
+                    btn.innerHTML = teksTombolAsli;
+                });
         });
     </script>
 </body>
