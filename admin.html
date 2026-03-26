@@ -510,22 +510,26 @@
         document.getElementById('tableContainer').innerHTML = '<div class="status-loading">⏳ Memuat data pesanan...</div>';
 
         try {
-            // Fetch published Google Sheets as CSV
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(SHEET_NAME)}`;
+            // Fetch published Google Sheets as JSON
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error('Gagal mengambil data');
-            const csv = await res.text();
-            const rows = parseCSV(csv);
+            let text = await res.text();
 
-            if (rows.length < 2) {
+            // Format JSON dari gviz/tq dibungkus dalam fungsi, kita harus menghapus pembungkus itu
+            const jsonText = text.substring(47).slice(0, -2);
+            const json = JSON.parse(jsonText);
+
+            if (!json.table || !json.table.rows || json.table.rows.length === 0) {
                 showNoData();
                 return;
             }
 
-            processData(rows);
+            processDataJSON(json.table);
         } catch (err) {
             document.getElementById('dashSubtitle').textContent = '⚠️ Gagal memuat data. Pastikan Spreadsheet ID sudah benar dan sheet dipublish.';
             document.getElementById('tableContainer').innerHTML = `<div class="status-loading">❌ Error: ${err.message}<br><small>Cek SHEET_ID di kode admin.html</small></div>`;
+            console.error(err);
         }
     }
 
@@ -545,22 +549,19 @@
         });
     }
 
-    function processData(rows) {
-        // rows[0] = header. Expected columns: Timestamp, Nama, Jumlah
-        // Adjust column indices if your sheet differs
-        const header = rows[0].map(h => h.toLowerCase().replace(/"/g, ''));
+    function processDataJSON(table) {
+        const header = table.cols.map(col => col.label ? col.label.toLowerCase() : '');
         
-        // Try to find column indices dynamically
         let colTimestamp = header.findIndex(h => h.includes('timestamp') || h.includes('waktu') || h.includes('tanggal'));
         let colNama = header.findIndex(h => h.includes('nama'));
         let colJumlah = header.findIndex(h => h.includes('jumlah') || h.includes('qty') || h.includes('botol'));
 
-        // Fallback to positions 0,1,2
+        // Fallback to positions 0,1,2 jika header kosong atau tidak cocok
         if (colTimestamp < 0) colTimestamp = 0;
         if (colNama < 0) colNama = 1;
         if (colJumlah < 0) colJumlah = 2;
 
-        const data = rows.slice(1).filter(r => r.length > 1 && r[colNama]);
+        const data = table.rows.filter(r => r.c && r.c[colNama] && r.c[colNama].v != null);
 
         const today = new Date();
         const todayStr = today.toLocaleDateString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric' });
@@ -568,17 +569,37 @@
         let totalOrders = data.length;
         let totalBottles = 0;
         let todayOrders = 0;
-        const dailyMap = {}; // date -> bottles
-        const monthlyMap = {}; // YYYY-MM -> bottles
+        const dailyMap = {}; 
+        const monthlyMap = {}; 
 
         data.forEach(row => {
-            const jumlah = parseInt(row[colJumlah]) || 0;
+            let jumlah = 0;
+            if (row.c[colJumlah] && row.c[colJumlah].v) {
+                 // Memastikan yang diambil adalah angka, handle jika itu string dengan koma
+                 let val = row.c[colJumlah].v;
+                 if(typeof val === 'string') {
+                    val = val.replace(/,/g, '');
+                 }
+                 jumlah = parseInt(val) || 0;
+            }
+            
             totalBottles += jumlah;
 
             let dateObj = null;
-            if (row[colTimestamp]) {
-                // Try parsing timestamp
-                try { dateObj = new Date(row[colTimestamp]); } catch(e) {}
+            if (row.c[colTimestamp]) {
+                // Di JSON gviz, format tanggal bisa berupa string khusus atau nilai langsung
+                let val = row.c[colTimestamp].v;
+                if (typeof val === 'string') {
+                    // Coba periksa apakah itu format Date(Tahun,Bulan,Hari...)
+                    if (val.startsWith('Date(')) {
+                        const dateParams = val.substring(5, val.length - 1).split(',');
+                        if (dateParams.length >= 3) {
+                            dateObj = new Date(parseInt(dateParams[0]), parseInt(dateParams[1]), parseInt(dateParams[2]));
+                        }
+                    } else {
+                        try { dateObj = new Date(val); } catch(e) {}
+                    }
+                }
             }
 
             if (dateObj && !isNaN(dateObj)) {
@@ -592,19 +613,17 @@
 
         const totalRevenue = totalBottles * PRICE_PER_BOTTLE;
 
-        // Update summary
         document.getElementById('statTotalOrders').textContent = totalOrders;
         document.getElementById('statTotalBottles').textContent = totalBottles + ' Botol';
         document.getElementById('statRevenue').textContent = formatRupiah(totalRevenue);
         document.getElementById('statToday').textContent = todayOrders + ' Botol';
         document.getElementById('dashSubtitle').textContent = `Data diperbarui: ${new Date().toLocaleString('id-ID')}`;
 
-        // Build charts
         buildDailyChart(dailyMap);
         buildMonthlyChart(monthlyMap);
 
-        // Build table (last 20 orders)
-        buildTable(data, colTimestamp, colNama, colJumlah);
+        // Build table (last 20 orders) - Butuh penyesuaian sedikit
+        buildTableJSON(data, colTimestamp, colNama, colJumlah);
     }
 
     function buildDailyChart(dailyMap) {
@@ -679,7 +698,7 @@
         });
     }
 
-    function buildTable(data, colTimestamp, colNama, colJumlah) {
+    function buildTableJSON(data, colTimestamp, colNama, colJumlah) {
         const recent = data.slice(-20).reverse();
         if (recent.length === 0) {
             document.getElementById('tableContainer').innerHTML = '<div class="status-loading">Belum ada data pesanan.</div>';
@@ -697,14 +716,35 @@
             <tbody>`;
 
         recent.forEach((row, i) => {
-            const nama = row[colNama] || '—';
-            const jumlah = parseInt(row[colJumlah]) || 0;
+            const nama = row.c[colNama] ? row.c[colNama].v : '—';
+            
+            let jumlah = 0;
+            if (row.c[colJumlah] && row.c[colJumlah].v) {
+                 let val = row.c[colJumlah].v;
+                 if(typeof val === 'string') val = val.replace(/,/g, '');
+                 jumlah = parseInt(val) || 0;
+            }
+
             const subtotal = formatRupiah(jumlah * PRICE_PER_BOTTLE);
-            let waktu = row[colTimestamp] || '—';
-            try {
-                const d = new Date(waktu);
-                if (!isNaN(d)) waktu = d.toLocaleString('id-ID');
-            } catch(e) {}
+            
+            let waktu = '—';
+            if (row.c[colTimestamp] && row.c[colTimestamp].f) { // Coba pakai format tampilan (f) jika ada
+                 waktu = row.c[colTimestamp].f;
+            } else if (row.c[colTimestamp] && row.c[colTimestamp].v) {
+                 let val = row.c[colTimestamp].v;
+                 if (typeof val === 'string' && val.startsWith('Date(')) {
+                     const dateParams = val.substring(5, val.length - 1).split(',');
+                     if (dateParams.length >= 3) {
+                         const d = new Date(parseInt(dateParams[0]), parseInt(dateParams[1]), parseInt(dateParams[2]));
+                         if (!isNaN(d)) waktu = d.toLocaleDateString('id-ID');
+                     }
+                 } else {
+                     try {
+                         const d = new Date(val);
+                         if (!isNaN(d)) waktu = d.toLocaleString('id-ID');
+                     } catch(e) {}
+                 }
+            }
 
             html += `<tr>
                 <td style="color:#aaa;font-size:12px">${i+1}</td>
