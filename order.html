@@ -97,7 +97,8 @@
                 const nomorWA = '6285168631669'; 
 
                 const tautanWA = `https://wa.me/${nomorWA}?text=${pesanEncoded}`;
-                window.open(tautanWA, '_blank');
+                alert('Pesanan berhasil dicatat! Sistem akan mengalihkan kamu ke WhatsApp.');
+                window.location.href = tautanWA;
 
             } catch (error) {
                 alert('Maaf, terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
