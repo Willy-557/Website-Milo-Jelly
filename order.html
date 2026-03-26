@@ -1,57 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
-<script>
-    document.getElementById('btnWa').addEventListener('click', async function(e) {
-        e.preventDefault(); 
-
-        const namaInput = document.getElementById('nama_pengguna').value.trim();
-        const jumlahInput = document.getElementById('jumlah').value;
-        const jumlah = parseInt(jumlahInput) || 0;
-
-        if (namaInput === '' || jumlah <= 0) {
-            alert('Kamu wajib mengisi nama dan jumlah pesanan dengan benar.');
-            return;
-        }
-
-        const tombol = document.getElementById('btnWa');
-        const teksAsli = tombol.innerHTML;
-        tombol.innerHTML = 'Memproses...';
-        tombol.style.pointerEvents = 'none';
-
-        const hargaPerBotol = 15000; 
-        const totalHarga = jumlah * hargaPerBotol;
-
-        const formData = new FormData();
-        formData.append('nama', namaInput);
-        formData.append('jumlah', jumlah);
-        formData.append('total', totalHarga);
-
-        const urlScript = 'https://script.google.com/macros/s/AKfycbx0inexxMZdjyKWrKqO6yGztpatKptKSnpJAEfoLvky2CUloeAGbcSNJkx1c0Xw_L8G1A/exec';
-
-        try {
-            await fetch(urlScript, { method: 'POST', body: formData });
-
-            const formatRupiah = (angka) => new Intl.NumberFormat('id-ID').format(angka);
-            const totalRupiah = `Rp ${formatRupiah(totalHarga)}`;
-
-            const teksWA = `Halo Milo Jelly Station! 👋\n\nNama Pemesan: ${namaInput}\n\nRincian Pesanan:\n1. Milo Original Jelly (${jumlah}x) - ${totalRupiah}\n\n━━━━━━━━━━━━━━\nTOTAL: ${totalRupiah}\n━━━━━━━━━━━━━━\n\nMohon segera diproses ya Kak, terima kasih! 🙏`;
-            
-            const pesanEncoded = encodeURIComponent(teksWA);
-            const nomorWA = '6285168631669'; // Ganti dengan nomor yang benar
-
-            const tautanWA = `https://wa.me/${nomorWA}?text=${pesanEncoded}`;
-            window.open(tautanWA, '_blank');
-
-        } catch (error) {
-            alert('Maaf, terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
-            console.error(error);
-        } finally {
-            tombol.innerHTML = teksAsli;
-            tombol.style.pointerEvents = 'auto';
-        }
-    });
-</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,5 +57,56 @@
             </form>
         </div>
     </div>
+    <script>
+        document.getElementById('btnWa').addEventListener('click', async function(e) {
+            e.preventDefault(); 
+
+            const namaInput = document.getElementById('nama_pengguna').value.trim();
+            const jumlahInput = document.getElementById('jumlah').value;
+            const jumlah = parseInt(jumlahInput) || 0;
+
+            if (namaInput === '' || jumlah <= 0) {
+                alert('Kamu wajib mengisi nama dan jumlah pesanan dengan benar.');
+                return;
+            }
+
+            const tombol = document.getElementById('btnWa');
+            const teksAsli = tombol.innerHTML;
+            tombol.innerHTML = 'Memproses...';
+            tombol.style.pointerEvents = 'none';
+
+            const hargaPerBotol = 15000; 
+            const totalHarga = jumlah * hargaPerBotol;
+
+            const formData = new FormData();
+            formData.append('nama', namaInput);
+            formData.append('jumlah', jumlah);
+            formData.append('total', totalHarga);
+
+            const urlScript = 'https://script.google.com/macros/s/AKfycbx0inexxMZdjyKWrKqO6yGztpatKptKSnpJAEfoLvky2CUloeAGbcSNJkx1c0Xw_L8G1A/exec';
+
+            try {
+                await fetch(urlScript, { method: 'POST', body: formData });
+
+                const formatRupiah = (angka) => new Intl.NumberFormat('id-ID').format(angka);
+                const totalRupiah = `Rp ${formatRupiah(totalHarga)}`;
+
+                const teksWA = `Halo Milo Jelly Station! 👋\n\nNama Pemesan: ${namaInput}\n\nRincian Pesanan:\n1. Milo Original Jelly (${jumlah}x) - ${totalRupiah}\n\n━━━━━━━━━━━━━━\nTOTAL: ${totalRupiah}\n━━━━━━━━━━━━━━\n\nMohon segera diproses ya Kak, terima kasih! 🙏`;
+                
+                const pesanEncoded = encodeURIComponent(teksWA);
+                const nomorWA = '6285168631669'; 
+
+                const tautanWA = `https://wa.me/${nomorWA}?text=${pesanEncoded}`;
+                window.open(tautanWA, '_blank');
+
+            } catch (error) {
+                alert('Maaf, terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
+                console.error(error);
+            } finally {
+                tombol.innerHTML = teksAsli;
+                tombol.style.pointerEvents = 'auto';
+            }
+        });
+    </script>
 </body>
 </html>
