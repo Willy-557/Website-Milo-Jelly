@@ -2,41 +2,73 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif; /* Font modern sesuai desain */
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: #fcf7f2; /* Warna background krem lembut */
+    background-color: #fcf7f2;
     color: #333;
 }
 
-/* Navbar dibuat putih sesuai gambar desain */
 .navbar {
-    background-color: #ffffff; 
-    padding: 15px 20px;
+    background-color: #ffffff;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.navbar-left img {
-    height: 40px; /* Gunakan height untuk logo di navbar */
+.navbar-left img { height: 40px; }
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Layout Utama - Dibuat khusus Mobile (Vertikal) */
+.nav-link {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5d4037;
+    padding: 7px 15px;
+    border-radius: 50px;
+    transition: 0.2s;
+}
+
+.nav-link:hover, .nav-link.active { background: #fdf6ee; }
+
+.nav-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fdf6ee;
+    border: 1.5px solid #e5d5c5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: 0.2s;
+    margin-left: 4px;
+}
+
+.nav-icon:hover { border-color: #c4874a; }
+
 .container {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
-    gap: 30px; /* Jarak antara gambar dan form */
+    gap: 30px;
     padding: 30px 20px;
-    max-width: 480px; /* Membatasi lebar agar tetap seperti tampilan HP di layar besar */
+    max-width: 480px;
     margin: 0 auto;
 }
 
-/* Kotak Gambar Kiri */
 .container-left {
     background-color: white;
     padding: 15px;
     border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* Tambahan bayangan halus */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     width: 100%;
     text-align: center;
 }
@@ -46,7 +78,6 @@ body {
     border-radius: 10px;
 }
 
-/* Label Kecil di bawah gambar */
 .badges {
     display: flex;
     justify-content: center;
@@ -64,7 +95,6 @@ body {
     border-radius: 8px;
 }
 
-/* Kotak Form Kanan */
 .container-right {
     background-color: white;
     border-radius: 20px;
@@ -74,8 +104,8 @@ body {
 }
 
 #header1 {
-    font-size: 26px; /* Diperkecil agar pas di HP */
-    color: #5d4037; /* Warna coklat gelap */
+    font-size: 26px;
+    color: #5d4037;
     margin-bottom: 5px;
 }
 
@@ -86,10 +116,7 @@ body {
     line-height: 1.5;
 }
 
-/* Styling Input & Label */
-.form-group {
-    margin-bottom: 20px;
-}
+.form-group { margin-bottom: 20px; }
 
 .form-group label {
     display: block;
@@ -100,7 +127,7 @@ body {
 }
 
 .form-group input {
-    width: 100%; /* Agar full menyesuaikan layar HP */
+    width: 100%;
     padding: 12px 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -108,7 +135,6 @@ body {
     outline: none;
 }
 
-/* Trik untuk memunculkan teks "Botol" di dalam kolom input */
 .input-wrapper {
     position: relative;
     display: flex;
@@ -122,13 +148,12 @@ body {
     font-size: 14px;
 }
 
-/* Styling Tombol WhatsApp */
 .btn-wa {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    background-color: #059669; /* Warna hijau WA */
+    background-color: #059669;
     color: white;
     padding: 15px;
     border-radius: 8px;
@@ -139,10 +164,6 @@ body {
     transition: 0.3s;
 }
 
-.btn-wa img {
-    width: 20px;
-}
+.btn-wa img { width: 20px; }
 
-.btn-wa:hover {
-    background-color: #047857;
-}
+.btn-wa:hover { background-color: #047857; }

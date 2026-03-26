@@ -3,117 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milo Jelly | Order</title>
-    <link rel="stylesheet" href="order.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Milo Jelly | Kesegaran Autentik</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --brown-dark: #3e2005;
+            --brown-mid: #7b3f00;
+            --brown-light: #c4874a;
+            --green: #059669;
+            --green-dark: #047857;
+            --cream: #fdf6ee;
+            --cream2: #fff8f0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--cream);
+            color: var(--brown-dark);
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: var(--white);
+            padding: 12px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .navbar-logo img {
+            height: 48px;
+        }
+
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .navbar-links a {
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--brown-dark);
+            padding: 8px 18px;
+            border-radius: 50px;
+            transition: 0.2s;
+        }
+
+        .navbar-links a:hover, .navbar-links a.active {
+            background: var(--cream);
+            color: var(--brown-mid);
+        }
+
+        .btn-pesan-nav {
+            background: var(--green) !important;
+            color: var(--white) !important;
+            padding: 9px 22px !important;
+            border-radius: 50px !important;
+        }
+
+        .btn-pesan-nav:hover {
+            background: var(--green-dark) !important;
+        }
+
+        .icon-admin {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--cream);
+            border: 2px solid #e5d5c5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+            margin-left: 5px;
+        }
+
+        .icon-admin:hover {
+            border-color: var(--brown-light);
+            background: #f5ebe0;
+        }
+
+        .icon-admin svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--brown-mid);
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 60px 5% 50px;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 520px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #d1fae5;
+            color: var(--green-dark);
+            font-weight: 800;
+            font-size: 12px;
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(38px, 6vw, 64px);
+            line-height: 1.1;
+            color: var(--brown-dark);
+            margin-bottom: 16px;
+        }
+
+        .hero-title span {
+            color: var(--green);
+        }
+
+        .hero-desc {
+            font-size: 15px;
+            color: #6b5447;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .hero-price {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--brown-dark);
+            margin-bottom: 28px;
+        }
+
+        .hero-price span {
+            color: var(--green);
+            font-family: 'Fredoka One', cursive;
+            font-size: 34px;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: var(--brown-dark);
+            color: var(--white);
+            padding: 14px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 15px;
+            transition: 0.3s;
+            box-shadow: 0 4px 20px rgba(62,32,5,0.25);
+        }
+
+        .btn-cta:hover {
+            background: var(--brown-mid);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(62,32,5,0.3);
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image img {
+            max-width: 380px;
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(62,32,5,0.15);
+        }
+
+        /* ===== WHY SECTION ===== */
+        .why-section {
+            background: var(--white);
+            padding: 60px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: 32px;
+            color: var(--brown-dark);
+            margin-bottom: 40px;
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .why-card {
+            background: var(--cream);
+            border-radius: 20px;
+            padding: 28px 22px;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .why-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(62,32,5,0.1);
+        }
+
+        .why-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 14px;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 26px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .why-card h3 {
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--brown-dark);
+            margin-bottom: 8px;
+        }
+
+        .why-card p {
+            font-size: 13px;
+            color: #7a6055;
+            line-height: 1.6;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--brown-dark);
+            color: #d4b89a;
+            padding: 40px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .footer-brand img {
+            height: 40px;
+            filter: brightness(0) invert(1);
+            opacity: 0.85;
+            margin-bottom: 10px;
+        }
+
+        .footer-brand p {
+            font-size: 13px;
+            line-height: 1.6;
+            max-width: 220px;
+        }
+
+        .footer-col h4 {
+            font-weight: 800;
+            font-size: 14px;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer-col ul li a {
+            color: #d4b89a;
+            text-decoration: none;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            background: #2a1500;
+            text-align: center;
+            padding: 14px;
+            font-size: 12px;
+            color: #a08060;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column-reverse;
+                padding: 40px 5%;
+                text-align: center;
+            }
+            .hero-image img { max-width: 280px; }
+            .navbar-links a { font-size: 13px; padding: 7px 12px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <a href="#"><img src="logo2.png" alt="Logo Milo Jelly"></a>
-        </div>
-    </div>
 
-    <div class="container">
-        <div class="container-left">
-            <img src="milojellybotol.jpg.png" alt="Produk Milo Jelly">
-            <div class="badges">
-                <span class="badge">Freshly Made</span>
-                <span class="badge">Real Milo Jelly</span>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html"><img src="logo2.png" alt="Milo Jelly"></a>
+        </div>
+        <ul class="navbar-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="order.html" class="btn-pesan-nav">Pesan</a></li>
+            <li>
+                <a href="admin.html" class="icon-admin" title="Admin Login">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-text">
+            <span class="hero-badge">✨ Terbaru & Terfavorit</span>
+            <h1 class="hero-title">Nikmati Kesegaran<br><span>Milo Jelly!</span></h1>
+            <p class="hero-desc">Milo Jelly yang segar dengan butiran jelly cokelat yang kenyal. Perpaduan sempurna antara susu Milo legendaris dan tekstur jelly yang unik.</p>
+            <div class="hero-price">Hanya <span>Rp 10.000</span></div>
+            <a href="order.html" class="btn-cta">🛍️ Pesan Sekarang</a>
+        </div>
+        <div class="hero-image">
+            <img src="milojellybotol_jpg.png" alt="Milo Jelly Bottle">
+        </div>
+    </section>
+
+    <!-- WHY -->
+    <section class="why-section">
+        <h2 class="section-title">Mengapa Milo Jelly?</h2>
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="why-icon">🥛</div>
+                <h3>Susu Milo Asli</h3>
+                <p>Dibuat menggunakan resep Milo yang kaya akan rasa cokelat malt.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">🍮</div>
+                <h3>Jelly Kenyal</h3>
+                <p>Tekstur jelly cokelat yang unik memberikan pengalaman minum berbeda di setiap sedotan.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">💸</div>
+                <h3>Harga Terjangkau</h3>
+                <p>Nikmati kesegaran premium hanya dengan Rp 10.000 saja.</p>
             </div>
         </div>
-        
+    </section>
 
-        <div class="container-right">
-            <h2 id="header1">Konfirmasi Pesanan</h2>
-            <p class="subtitle">Lengkapi data di bawah ini untuk memesan kelezatan Milo Jelly.</p>
-            
-            <form id="orderForm">
-                <div class="form-group">
-                    <label for="nama_pengguna">NAMA LENGKAP</label>
-                    <input type="text" id="nama_pengguna" name="nama" placeholder="Masukkan nama lengkap Anda">
-                </div>
-                
-                <div class="form-group">
-                    <label for="jumlah">JUMLAH PESANAN</label>
-                    <div class="input-wrapper">
-                        <input type="number" id="jumlah" name="jumlah" placeholder="0">
-                        <span class="suffix">Botol</span>
-                    </div>
-                </div>
-                
-                <a href="#" class="btn-wa">
-                    <img src="logowa3.png" alt="Logo WA">
-                    <span>Kirim via WhatsApp</span>
-                </a>
-            </form>
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            <img src="logo2.png" alt="Milo Jelly">
+            <p>Milo Jelly menyajikan kesegaran unik dengan cita rasa Milo yang autentik. Temukan kami di berbagai lokasi terdekat.</p>
         </div>
-    </div>
-    <script>
-        document.querySelector('.btn-wa').addEventListener('click', function(e) {
-            e.preventDefault();
+        <div class="footer-col">
+            <h4>Menu</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="order.html">Pesan</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Bantuan</h4>
+            <ul>
+                <li><a href="#">Hubungi Kami</a></li>
+                <li><a href="#">Syarat & Ketentuan</a></li>
+                <li><a href="#">Kebijakan Privasi</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Ikuti Kami</h4>
+            <ul>
+                <li><a href="#">📘 Facebook</a></li>
+                <li><a href="#">📸 Instagram</a></li>
+            </ul>
+        </div>
+    </footer>
+    <div class="footer-bottom">© 2025 Milo Jelly Indonesia. All Rights Reserved.</div>
 
-            
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyVWc5KeIGIFwVBiiawjpdNsk4gJ_3z8f_xpzzn2p0t75_yy9FYb3uTa9L2R6oFGyiF9w/exec'; 
-
-            
-            const nama = document.getElementById('nama_pengguna').value;
-            const jumlah = document.getElementById('jumlah').value;
-
-            
-            if (nama.trim() === '') {
-                alert('Halo! Mohon isi Nama Lengkap Anda terlebih dahulu ya.');
-                return;
-            }
-            if (jumlah === '' || jumlah <= 0) {
-                alert('Mohon masukkan jumlah pesanan yang benar (minimal 1).');
-                return;
-            }
-
-            
-            const hargaPerBotol = 15000;
-            const totalHarga = jumlah * hargaPerBotol;
-
-            
-            const formatRupiah = (angka) => {
-                return 'Rp ' + angka.toLocaleString('id-ID');
-            };
-
-            
-            const btn = document.querySelector('.btn-wa');
-            const teksTombolAsli = btn.innerHTML;
-            btn.innerHTML = '<span>Mencatat Pesanan... Tunggu ya ⏳</span>';
-
-            
-            const formData = new FormData();
-            formData.append('nama', nama);
-            formData.append('jumlah', jumlah);
-            formData.append('total', totalHarga);
-
-            
-            fetch(scriptURL, { method: 'POST', body: formData, mode: 'no-cors' })
-                .then(response => {
-                    
-                    const pesan = `Halo Milo Jelly Station! 👋\n\nNama Pemesan: *${nama}*\n\nRincian Pesanan:\n1. Milo Original Jelly (${jumlah}x) - ${formatRupiah(totalHarga)}\n\n━━━━━━━━━━━━━━\nTOTAL: *${formatRupiah(totalHarga)}*\n━━━━━━━━━━━━━━\n\nMohon segera diproses ya Kak, terima kasih! 🙏`;
-
-                    
-                    const nomorWA = '6285168631669'; 
-
-                    const linkWA = `https://api.whatsapp.com/send?phone=${nomorWA}&text=${encodeURIComponent(pesan)}`;
-                    
-                    
-                    btn.innerHTML = teksTombolAsli;
-                    
-                    
-                    window.open(linkWA, '_blank');
-                })
-                .catch(error => {
-                    
-                    console.error('Error!', error.message);
-                    alert('Gagal menyambungkan ke sistem pembukuan, tapi Anda tetap bisa memesan via WA.');
-                    btn.innerHTML = teksTombolAsli;
-                });
-        });
-    </script>
 </body>
 </html>

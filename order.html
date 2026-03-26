@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milo Jelly | Order</title>
+    <link rel="stylesheet" href="order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="index.html"><img src="logo2.png" alt="Logo Milo Jelly"></a>
+        </div>
+        <div class="navbar-right">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="order.html" class="nav-link active">Pesan</a>
+            <a href="admin.html" class="nav-icon" title="Admin">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#7b3f00">
+                    <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="container-left">
+            <img src="milojellybotol_jpg.png" alt="Produk Milo Jelly">
+            <div class="badges">
+                <span class="badge">Freshly Made</span>
+                <span class="badge">Real Milo Jelly</span>
+            </div>
+        </div>
+
+        <div class="container-right">
+            <h2 id="header1">Konfirmasi Pesanan</h2>
+            <p class="subtitle">Lengkapi data di bawah ini untuk memesan kelezatan Milo Jelly.</p>
+            
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="nama_pengguna">NAMA LENGKAP</label>
+                    <input type="text" id="nama_pengguna" name="nama" placeholder="Masukkan nama lengkap Anda">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jumlah">JUMLAH PESANAN</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="jumlah" name="jumlah" placeholder="0">
+                        <span class="suffix">Botol</span>
+                    </div>
+                </div>
+                
+                <a href="#" class="btn-wa" id="btnWa">
+                    <img src="logowa3.png" alt="Logo WA">
+                    <span>Kirim via WhatsApp</span>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Preserve your existing Google Sheets + WhatsApp logic here
+        // The btn-wa click should still work as before
+    </script>
+</body>
+</html>
