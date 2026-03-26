@@ -370,7 +370,6 @@
 </head>
 <body>
 
-<!-- ===== LOGIN PAGE ===== -->
 <div id="loginPage">
     <div class="login-card">
         <img class="login-logo" src="logo2.png" alt="Milo Jelly">
@@ -389,7 +388,6 @@
     </div>
 </div>
 
-<!-- ===== DASHBOARD PAGE ===== -->
 <div id="dashboardPage">
     <nav class="dash-navbar">
         <img src="logo2.png" alt="Milo Jelly">
@@ -404,7 +402,6 @@
         <div class="dash-title">📊 Dashboard Penjualan</div>
         <div class="dash-subtitle" id="dashSubtitle">Memuat data...</div>
 
-        <!-- Summary Cards -->
         <div class="summary-grid">
             <div class="summary-card">
                 <div class="summary-icon brown">📦</div>
@@ -436,7 +433,6 @@
             </div>
         </div>
 
-        <!-- Charts -->
         <div class="charts-grid">
             <div class="chart-card">
                 <h3>📈 Penjualan 7 Hari Terakhir</h3>
@@ -448,7 +444,6 @@
             </div>
         </div>
 
-        <!-- Orders Table -->
         <div class="table-card">
             <div class="table-header">
                 <h3>🧾 Data Pesanan Terbaru</h3>
@@ -462,18 +457,10 @@
 </div>
 
 <script>
-    // =============================================
-    // CONFIG — ganti sesuai Google Sheets Anda
-    // =============================================
-    // 1BDLOFBVIDoGsWDBvHHKA6saISU2GPk3nzvKBPODpMEc
-    // 2PACX-1vRXQ5D7PS3ItXkQaz0YFEDaayK4TlHXo-tfN1cRXQgsQUbx4xs1sr3MxnkIEOV6ivTFWGH7i4FGA4L5
     const SHEET_ID = '1BDLOFBVIDoGsWDBvHHKA6saISU2GPk3nzvKBPODpMEc';
-    const SHEET_NAME = 'Sheet1'; // ganti nama sheet jika berbeda
-    const PRICE_PER_BOTTLE = 15000; // Rp 10.000
+    const SHEET_NAME = 'Sheet1'; // nama sheet 
+    const PRICE_PER_BOTTLE = 15000; // harga
 
-    // =============================================
-    // LOGIN
-    // =============================================
     function doLogin() {
         const u = document.getElementById('usernameInput').value.trim();
         const p = document.getElementById('passwordInput').value.trim();
@@ -486,7 +473,6 @@
         }
     }
 
-    // Allow Enter key on password
     document.getElementById('passwordInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') doLogin();
     });
@@ -501,9 +487,6 @@
         document.getElementById('passwordInput').value = '';
     }
 
-    // =============================================
-    // LOAD DATA FROM GOOGLE SHEETS
-    // =============================================
     let chartDaily = null;
     let chartMonthly = null;
 
@@ -512,13 +495,11 @@
         document.getElementById('tableContainer').innerHTML = '<div class="status-loading">⏳ Memuat data pesanan...</div>';
 
         try {
-            // Fetch published Google Sheets as JSON
             const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error('Gagal mengambil data');
             let text = await res.text();
 
-            // Format JSON dari gviz/tq dibungkus dalam fungsi, kita harus menghapus pembungkus itu
             const jsonText = text.substring(47).slice(0, -2);
             const json = JSON.parse(jsonText);
 
@@ -538,7 +519,6 @@
     function parseCSV(text) {
         const lines = text.trim().split('\n');
         return lines.map(line => {
-            // Handle quoted fields
             const result = [];
             let cur = '', inQ = false;
             for (let i = 0; i < line.length; i++) {
@@ -558,7 +538,6 @@
         let colNama = header.findIndex(h => h.includes('nama'));
         let colJumlah = header.findIndex(h => h.includes('jumlah') || h.includes('qty') || h.includes('botol'));
 
-        // Fallback to positions 0,1,2 jika header kosong atau tidak cocok
         if (colTimestamp < 0) colTimestamp = 0;
         if (colNama < 0) colNama = 1;
         if (colJumlah < 0) colJumlah = 2;
@@ -577,7 +556,6 @@
         data.forEach(row => {
             let jumlah = 0;
             if (row.c[colJumlah] && row.c[colJumlah].v) {
-                 // Memastikan yang diambil adalah angka, handle jika itu string dengan koma
                  let val = row.c[colJumlah].v;
                  if(typeof val === 'string') {
                     val = val.replace(/,/g, '');
@@ -589,10 +567,8 @@
 
             let dateObj = null;
             if (row.c[colTimestamp]) {
-                // Di JSON gviz, format tanggal bisa berupa string khusus atau nilai langsung
                 let val = row.c[colTimestamp].v;
                 if (typeof val === 'string') {
-                    // Coba periksa apakah itu format Date(Tahun,Bulan,Hari...)
                     if (val.startsWith('Date(')) {
                         const dateParams = val.substring(5, val.length - 1).split(',');
                         if (dateParams.length >= 3) {
@@ -730,7 +706,7 @@
             const subtotal = formatRupiah(jumlah * PRICE_PER_BOTTLE);
             
             let waktu = '—';
-            if (row.c[colTimestamp] && row.c[colTimestamp].f) { // Coba pakai format tampilan (f) jika ada
+            if (row.c[colTimestamp] && row.c[colTimestamp].f) { 
                  waktu = row.c[colTimestamp].f;
             } else if (row.c[colTimestamp] && row.c[colTimestamp].v) {
                  let val = row.c[colTimestamp].v;
