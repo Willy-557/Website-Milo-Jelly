@@ -273,6 +273,85 @@
             max-height: 240px;
         }
 
+        /* CSS FILTER KALENDER */
+        .admin-filter-container {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 22px 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            margin-bottom: 28px;
+        }
+
+        .admin-filter-container h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--brown-dark);
+            margin-bottom: 16px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--brown-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-input {
+            padding: 10px 16px;
+            border: 2px solid #e5d5c5;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            color: var(--brown-dark);
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            background: #fffaf6;
+        }
+
+        .filter-input:focus {
+            border-color: var(--green);
+            background: var(--white);
+        }
+
+        .btn-filter, .btn-reset {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn-filter {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .btn-filter:hover { background: var(--green-dark); }
+
+        .btn-reset {
+            background: #e5d5c5;
+            color: var(--brown-dark);
+        }
+
+        .btn-reset:hover { background: #d4b89a; }
+
         /* Orders Table */
         .table-card {
             background: var(--white);
@@ -444,6 +523,24 @@
             </div>
         </div>
 
+        <div class="admin-filter-container">
+            <h3>🔎 Filter Data Pesanan</h3>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="filter-date">Cari per Hari:</label>
+                    <input type="date" id="filter-date" class="filter-input" onchange="document.getElementById('filter-month').value=''">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter-month">Cari per Bulan:</label>
+                    <input type="month" id="filter-month" class="filter-input" onchange="document.getElementById('filter-date').value=''">
+                </div>
+
+                <button class="btn-filter" onclick="filterSales()">Cari Data</button>
+                <button class="btn-reset" onclick="resetFilter()">Reset</button>
+            </div>
+        </div>
+
         <div class="table-card">
             <div class="table-header">
                 <h3>🧾 Data Pesanan Terbaru</h3>
@@ -458,8 +555,12 @@
 
 <script>
     const SHEET_ID = '1BDLOFBVIDoGsWDBvHHKA6saISU2GPk3nzvKBPODpMEc';
-    const SHEET_NAME = 'Sheet1'; // nama sheet 
-    const PRICE_PER_BOTTLE = 15000; // harga
+    const SHEET_NAME = 'Sheet1'; 
+    const PRICE_PER_BOTTLE = 15000; 
+
+    // Variabel Global untuk menyimpan data agar bisa difilter
+    let globalRawData = [];
+    let globalCols = {};
 
     function doLogin() {
         const u = document.getElementById('usernameInput').value.trim();
@@ -516,21 +617,6 @@
         }
     }
 
-    function parseCSV(text) {
-        const lines = text.trim().split('\n');
-        return lines.map(line => {
-            const result = [];
-            let cur = '', inQ = false;
-            for (let i = 0; i < line.length; i++) {
-                if (line[i] === '"') { inQ = !inQ; }
-                else if (line[i] === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
-                else { cur += line[i]; }
-            }
-            result.push(cur.trim());
-            return result;
-        });
-    }
-
     function processDataJSON(table) {
         const header = table.cols.map(col => col.label ? col.label.toLowerCase() : '');
         
@@ -543,6 +629,10 @@
         if (colJumlah < 0) colJumlah = 2;
 
         const data = table.rows.filter(r => r.c && r.c[colNama] && r.c[colNama].v != null);
+        
+        // Simpan data ke variabel global agar bisa difilter
+        globalRawData = data;
+        globalCols = { colTimestamp, colNama, colJumlah };
 
         const today = new Date();
         const todayStr = today.toLocaleDateString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric' });
@@ -565,20 +655,7 @@
             
             totalBottles += jumlah;
 
-            let dateObj = null;
-            if (row.c[colTimestamp]) {
-                let val = row.c[colTimestamp].v;
-                if (typeof val === 'string') {
-                    if (val.startsWith('Date(')) {
-                        const dateParams = val.substring(5, val.length - 1).split(',');
-                        if (dateParams.length >= 3) {
-                            dateObj = new Date(parseInt(dateParams[0]), parseInt(dateParams[1]), parseInt(dateParams[2]));
-                        }
-                    } else {
-                        try { dateObj = new Date(val); } catch(e) {}
-                    }
-                }
-            }
+            let dateObj = getRowDate(row, colTimestamp);
 
             if (dateObj && !isNaN(dateObj)) {
                 const dStr = dateObj.toLocaleDateString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric' });
@@ -600,8 +677,64 @@
         buildDailyChart(dailyMap);
         buildMonthlyChart(monthlyMap);
 
-        // Build table (last 20 orders) - Butuh penyesuaian sedikit
+        // Build table awal (semua data / 20 terakhir)
         buildTableJSON(data, colTimestamp, colNama, colJumlah);
+    }
+
+    // --- FUNGSI BANTUAN MENGAMBIL TANGGAL DARI DATA SHEETS ---
+    function getRowDate(row, colTimestamp) {
+        let dateObj = null;
+        if (row.c[colTimestamp]) {
+            let val = row.c[colTimestamp].v;
+            if (typeof val === 'string') {
+                if (val.startsWith('Date(')) {
+                    const dateParams = val.substring(5, val.length - 1).split(',');
+                    if (dateParams.length >= 3) {
+                        dateObj = new Date(parseInt(dateParams[0]), parseInt(dateParams[1]), parseInt(dateParams[2]));
+                    }
+                } else {
+                    try { dateObj = new Date(val); } catch(e) {}
+                }
+            }
+        }
+        return dateObj;
+    }
+
+    // --- FUNGSI FILTER PENJUALAN ---
+    function filterSales() {
+        const dateInput = document.getElementById('filter-date').value;
+        const monthInput = document.getElementById('filter-month').value;
+
+        if (!dateInput && !monthInput) {
+            alert("Silakan pilih Hari atau Bulan terlebih dahulu!");
+            return;
+        }
+
+        const filteredData = globalRawData.filter(row => {
+            const d = getRowDate(row, globalCols.colTimestamp);
+            if (!d || isNaN(d)) return false;
+
+            if (dateInput) {
+                // dateInput formatnya YYYY-MM-DD
+                const rowDateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                return rowDateStr === dateInput;
+            } else if (monthInput) {
+                // monthInput formatnya YYYY-MM
+                const rowMonthStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+                return rowMonthStr === monthInput;
+            }
+            return true;
+        });
+
+        // Tampilkan tabel dengan data yang sudah difilter (tampilkan semua hasil filter, tanpa batasan 20)
+        buildTableJSON(filteredData, globalCols.colTimestamp, globalCols.colNama, globalCols.colJumlah, true);
+    }
+
+    function resetFilter() {
+        document.getElementById('filter-date').value = '';
+        document.getElementById('filter-month').value = '';
+        // Tampilkan kembali data aslinya (dibatasi 20 terakhir kembali secara default)
+        buildTableJSON(globalRawData, globalCols.colTimestamp, globalCols.colNama, globalCols.colJumlah);
     }
 
     function buildDailyChart(dailyMap) {
@@ -676,10 +809,13 @@
         });
     }
 
-    function buildTableJSON(data, colTimestamp, colNama, colJumlah) {
-        const recent = data.slice(-20).reverse();
+    // Menambahkan argumen showAll untuk menampilkan semua data saat pencarian
+    function buildTableJSON(data, colTimestamp, colNama, colJumlah, showAll = false) {
+        // Jika showAll true, ambil semua data yang ada di list, jika tidak hanya 20 terakhir
+        const recent = showAll ? [...data].reverse() : data.slice(-20).reverse();
+
         if (recent.length === 0) {
-            document.getElementById('tableContainer').innerHTML = '<div class="status-loading">Belum ada data pesanan.</div>';
+            document.getElementById('tableContainer').innerHTML = '<div class="status-loading">Tidak ada data pesanan yang sesuai.</div>';
             return;
         }
 
